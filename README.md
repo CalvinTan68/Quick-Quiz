@@ -6,6 +6,7 @@ This is a app to test your general knowledge. It is built with :
 - CSS
 - JavaScript (ReactJS)
 - React-Bootstrap
+- Open Trivia Database
 
 ## Using Project
 
@@ -27,8 +28,12 @@ This is a app to test your general knowledge. It is built with :
   npm install
 ```
 
-- Run command below to start
+- Run command below to start (ignore errors)
 
 ```bash
   npm start
 ```
+
+## Issue
+
+- Final score can't be showed on the result page
