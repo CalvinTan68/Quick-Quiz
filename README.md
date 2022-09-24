@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="600" src="https://github.com/CalvinTan68/Quick-Quiz/blob/main/preview.gif">
+</p>
+
 ## About Project
 
 This is a app to test your general knowledge. It is built with :
