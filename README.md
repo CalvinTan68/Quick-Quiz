@@ -37,7 +37,3 @@ This is a app to test your general knowledge. It is built with :
 ```bash
   npm start
 ```
-
-## Issue
-
-- Final score can't be showed on the result page
