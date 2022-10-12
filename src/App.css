@@ -65,7 +65,7 @@ body
   width: 3px;
   height: 7px;
   border-radius: 20%;
-  background: black;
+  background: grey;
 }
 
 .lds-spinner div:nth-child(1) {
