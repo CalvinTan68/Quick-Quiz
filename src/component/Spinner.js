@@ -1,7 +1,23 @@
-import React from 'react'
+import React from "react";
 
-export default () => {
+// This is a functional component
+const LoadingSpinner = () => {
   return (
-    <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-  )
-}
+    <div className="lds-spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
+};
+
+export default LoadingSpinner;

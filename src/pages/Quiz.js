@@ -1,158 +1,146 @@
-import React, { Component } from 'react'
-import Options from '../component/Options'
-import { Card } from 'react-bootstrap'
+import React, { useState, useEffect, useCallback } from "react";
+import Options from "../component/Options";
+import { Card } from "react-bootstrap";
 
-class Quiz extends Component{
-  constructor(){
-    super();
-    this.state = {
-      timer: 15,
-      qNumber: 1,
-      questions: {},
-      score: 0,
-      selectedAnswer: '',
-      evaluate: false
-    }
-  }
+const Quiz = ({ questions, finished }) => {
+  const [timer, setTimer] = useState(15);
+  const [qNumber, setQNumber] = useState(1);
+  const [score, setScore] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [evaluate, setEvaluate] = useState(false);
 
-  componentDidMount(){
-    this.setState({
-      questions: this.props.questions,
-    })
-    this.timer()
-  }
+  useEffect(() => {
+    setTimer(15);
+    setQNumber(1);
+    setScore(0);
+    setSelectedAnswer("");
+    setEvaluate(false);
+  }, [questions]);
 
-  timer(){
-      setInterval(() => {
-        if(this.state.timer === false) return
-        if(this.state.timer <= 1){
-          this.setState({
-            evaluate: 'spin',
-        })
-        }
-        if(this.state.timer === 0){
-          this.setState({
-            evaluate: 'no time',
-            selectedAnswer: false
-        })
-        } else {
-          this.setState({
-            timer: this.state.timer - 1
-          })
-        }
-      }, 1000)
-  }
-
-  change(a){
-    this.setState({selectedAnswer: a})
-  }
-
-  evaluate(){
-    setTimeout(()=>{
-      this.setState({evaluate: 'spin', timer: false})
-    }, 0)
-
-    setTimeout(()=>{
-      if (this.state.selectedAnswer === this.state.questions[this.state.qNumber - 1].correctAns){
-        this.setState({
-          evaluate: 'correct',
-          score: this.state.score + 1,
-        })
-        
-      } else if (this.state.selectedAnswer !== this.state.questions[this.state.qNumber - 1].correctAns){
-        this.setState({
-          evaluate: 'wrong'
-        })
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      if (timer <= 1) {
+        setEvaluate("spin");
       }
-    }, 0)
+      if (timer === 0) {
+        setEvaluate("no time");
+        setSelectedAnswer(false);
+      } else {
+        setTimer((prevTimer) => prevTimer - 1);
+      }
+    }, 1000);
 
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [timer]);
+
+  const change = useCallback((a) => {
+    setSelectedAnswer(a);
+  }, []);
+
+  const evaluateQuestion = useCallback(() => {
+    setEvaluate("spin");
+    setTimer(false);
+
+    setTimeout(() => {
+      if (selectedAnswer === questions[qNumber - 1].correctAns) {
+        setEvaluate("correct");
+        setScore((prevScore) => prevScore + 1);
+      } else {
+        setEvaluate("wrong");
+      }
+    }, 0);
+  }, [questions, qNumber, selectedAnswer]);
+
+  const nextQuestion = useCallback(() => {
+    if (qNumber === 10) {
+      finished(score >= 6 ? "pass" : "fail");
+    }
+
+    setTimeout(() => {
+      setEvaluate("spin");
+      setTimer(false);
+    }, 150);
+
+    setTimeout(() => {
+      setTimer(15);
+      setQNumber((prevQNumber) => prevQNumber + 1);
+      setEvaluate(false);
+      setSelectedAnswer("");
+    }, 300);
+  }, [qNumber, score, finished]);
+
+  useEffect(() => {
+    if (evaluate === "correct") {
+      nextQuestion();
+    }
+    if (evaluate === "wrong") {
+      nextQuestion();
+    }
+    if (evaluate === "no time") {
+      nextQuestion();
+    }
+  }, [evaluate, nextQuestion]);
+
+  let question;
+  let options;
+  let answer;
+  let opt;
+
+  if (questions.length > 1) {
+    question = questions[qNumber - 1].question;
+    answer = questions[qNumber - 1].correctAns;
+    options = questions[qNumber - 1].options;
+    opt = options.map((ans, i) => {
+      return (
+        <Options
+          key={i}
+          option={ans}
+          answer={answer}
+          change={(a) => change(a)}
+        />
+      );
+    });
   }
 
-  next(){
-    if(this.state.qNumber === 10){
-      this.state.score >= 6 ? this.props.finished('pass') : this.props.finished('fail')
-    }
-    setTimeout(()=>{
-      this.setState({evaluate: 'spin', timer: false})
-    }, 150)
-    setTimeout(()=>{
-      this.setState({
-        timer: 15,
-        qNumber: this.state.qNumber + 1,
-        evaluate: false,
-        selectedAnswer: ''
-      })
-    },300)
-  }
-
-
-  click(){
-    if(this.state.evaluate === false){
-      this.evaluate()
-    } else {
-      this.evaluate()
-    }
-  }
-
-
-
-  render(){
-    let question;
-    let options;
-    let answer;
-    let opt;
-                          
-    if(this.state.questions.length > 1){
-
-      question = this.state.questions[this.state.qNumber - 1].question
-      answer = this.state.questions[this.state.qNumber - 1].correctAns
-      options = this.state.questions[this.state.qNumber -1].options
-      opt = options.map((ans, i) => {
-        return <Options 
-                  key={i}
-                  option={ans}
-                  answer={answer}
-                  change={(a)=>this.change(a)} />
-      })
-    }
-    if(this.state.evaluate === 'correct'){
-        this.next()
-    }
-    if(this.state.evaluate === 'wrong'){
-        this.next()
-    }
-    if(this.state.evaluate === 'no time'){
-      this.next()
-    }
-
-
-    
-    return (
+  return (
     <>
       <Card className="play">
         <Card.Header>
-          <p>Time left: {this.state.timer === false ? 0 : this.state.timer}</p>
-          <p>Correct: {this.state.score}</p>
+          <p>Time left: {timer === false ? 0 : timer}</p>
+          <p>Correct: {score}</p>
         </Card.Header>
 
-        <div className="question">
-          <h1>Question {this.state.qNumber} / 10</h1>
+        <div
+          className="question"
+          onClick={() => {
+            if (evaluate === false) {
+              evaluateQuestion();
+            } else {
+              nextQuestion();
+            }
+          }}
+        >
+          <h1>Question {qNumber} / 10</h1>
           <h1>{decodeURIComponent(question)}</h1>
         </div>
 
-
-        <div className='options'
-          onClick={()=>{
-            if(this.state.evaluate === false){
-              this.evaluate()
+        <div
+          className="options"
+          onClick={() => {
+            if (evaluate === false) {
+              evaluateQuestion();
             } else {
-              this.next()
+              nextQuestion();
             }
-          }}>
+          }}
+        >
           {opt}
         </div>
       </Card>
     </>
-  )}
-}
-export default Quiz
+  );
+};
+
+export default Quiz;

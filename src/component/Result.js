@@ -1,28 +1,17 @@
-import React, {Fragment} from 'react'
-import { Button, Card } from 'react-bootstrap'
+import React from "react";
+import { Button, Card } from "react-bootstrap";
 
-export default function (props) {
-  let text;
-  if(props.pass){
-    text = <Fragment>
-              <h2>Congratulations!</h2>
-              <p>You passed the level!</p>
-              <Button variant="secondary" 
-                onClick={()=>props.play()}>Play Again!</Button>
-            </Fragment> 
-  } else {
-    text = <Fragment>
-              <h2>Sorry</h2>
-              <p>You did not pass the quiz.</p>
-              <Button variant="secondary"
-                onClick={()=>props.play()}>Try Again!</Button>
-            </Fragment> 
-  }
-
+export default function ResultCard(props) {
   return (
-    <Card className='result'>
+    <Card className="result">
       <Card.Body>
-        {text}
+        <h2>{props.pass ? "Congratulations!" : "Sorry"}</h2>
+        <p>
+          {props.pass ? "You passed the level!" : "You did not pass the quiz."}
+        </p>
+        <Button variant="secondary" onClick={props.play}>
+          {props.pass ? "Play Again!" : "Try Again!"}
+        </Button>
       </Card.Body>
     </Card>
   );

@@ -1,122 +1,110 @@
-import React, {Component} from 'react'
-import axios from 'axios'
-import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from "react-router-dom";
 
-import Init from './pages/Home'
-import Play from './pages/Quiz'
-import Result from './component/Result'
+import Init from "./pages/Home";
+import Play from "./pages/Quiz";
+import Result from "./component/Result";
 
-import Login from './pages/Login'
+import Login from "./pages/Login";
 
-class App extends Component {
-  constructor(){
-    super();
-    this.state = {
-      page: 'init',
-      spinner: false,
-      questions: {},
-      level: 1,
-      passed: false,
-      token: ''
+const App = () => {
+  const [page, setPage] = useState("init");
+  const [spinner, setSpinner] = useState(false);
+  const [questions, setQuestions] = useState({});
+  const [level, setLevel] = useState(1);
+  const [passed, setPassed] = useState(false);
+  const [token, setToken] = useState("");
+  const navigate = useNavigate();
+
+  const shuffle = (a) => {
+    return a.sort(() => Math.random() - 0.5);
+  };
+
+  const start = () => {
+    setSpinner(!spinner);
+    setTimeout(() => {
+      getUrl();
+    }, 300);
+  };
+
+  const getToken = async () => {
+    await axios
+      .get("https://opentdb.com/api_token.php?command=request")
+      .then((res) => {
+        setToken(res.data.token);
+      });
+  };
+
+  const getUrl = async () => {
+    if (token !== "") {
+      getToken();
     }
-  }
 
-  shuffle(a) {
-    return a.sort(() => Math.random() - 0.5)
-  }
+    let url = `https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple&encode=url3986`;
 
-  start (){
-    this.setState({spinner: !this.state.spinner})
-    setTimeout(()=>{
-      this.getUrl()  
-    }, 300)
-  }
-    
-  async getToken(){
-    await axios.get('https://opentdb.com/api_token.php?command=request')
-      .then(res => {
-        this.setState({token: res.data.token})
-      })
-  }
+    let res = await axios.get(url);
+    console.log(res);
 
-  getUrl = async () => {
-    if(this.state.token !== ''){
-      this.getToken()
-    }
-    
-    
-    let url = `https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple&encode=url3986`
-    
-    let res = await axios.get(url)
-    
     if (res.data.results) {
-      let questions = res.data.results.map((q)=>{
-        let opt = q.incorrect_answers
-        opt.push(q.correct_answer)
+      let newQuestions = res.data.results.map((q) => {
+        let opt = q.incorrect_answers;
+        opt.push(q.correct_answer);
         return {
           question: q.question,
           correctAns: q.correct_answer,
-          options: this.shuffle(opt)
-        }
-      })
-      this.setState({
-        questions,
-        page: 'play',
-        spinner: false
-      })
+          options: shuffle(opt),
+        };
+      });
+      setQuestions(newQuestions);
+      setPage("play");
+      setSpinner(false);
     }
-  }
+  };
 
-  finished(a){
-    if(a === 'pass') {
-      this.setState({page: 'result', passed: true})
-    } else if(a === 'fail'){
-      this.setState({page: 'result'})
+  const finished = (a) => {
+    if (a === "pass") {
+      setPassed(true);
     }
-  }
+    setPage("result");
+  };
 
-  play(){
-    this.getUrl()
-  }
+  const play = () => {
+    getUrl();
+  };
 
-  render(){
-    let page = this.state.page === 'init' ? 
-                  <Init 
-                    click={(a)=>this.start(a)}
-                    spinner={this.state.spinner} /> : 
-                    
-               this.state.page === 'play' ?
-                  <Play 
-                    questions={this.state.questions}
-                    level={this.state.level}
-                    finished={(a)=>this.finished(a)} /> : 
+  let content =
+    page === "init" ? (
+      <Init click={() => start()} spinner={spinner} />
+    ) : page === "play" ? (
+      <Play questions={questions} level={level} finished={(a) => finished(a)} />
+    ) : page === "result" ? (
+      <Result pass={passed} play={() => play()} />
+    ) : null;
 
-               this.state.page === 'result' ? 
-                  <Result 
-                    pass={this.state.passed}
-                    play={()=>this.play()}/> : null
-
-    return (
-      <>
+  return (
+    <>
       <Routes>
-        <Route exact path='/' element={
+        <Route
+          exact
+          path="/"
+          element={
             <div className="containerFluid">
               <Login />
             </div>
-        }
+          }
         />
-        <Route exact path='/quiz' element={
-            <div className="containerFluid">
-              {page}
-            </div>
-        }
+        <Route
+          exact
+          path="/quiz"
+          element={<div className="containerFluid">{content}</div>}
         />
       </Routes>
-      </>
-  )}
-}
+    </>
+  );
+};
 
-export default App
+export default App;
