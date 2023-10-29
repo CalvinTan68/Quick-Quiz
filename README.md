@@ -8,7 +8,7 @@ This is a app to test your general knowledge. It is built with :
 
 - HTML
 - CSS
-- JavaScript (ReactJS)
+- JavaScript (ReactJS) - Vite
 - React-Bootstrap
 - Open Trivia Database
 
@@ -20,13 +20,13 @@ This is a app to test your general knowledge. It is built with :
   git clone https://github.com/CalvinTan68/Quick-Quiz.git
 ```
 
-- After that 
+- After that
 
 ```bash
   cd Quick-Quiz
 ```
 
-- Run command below to install components and dependencies 
+- Run command below to install components and dependencies
 
 ```bash
   npm install
