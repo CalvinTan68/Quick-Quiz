@@ -9,7 +9,7 @@ import Init from "./pages/Home";
 import Play from "./pages/Quiz";
 import Result from "./component/Result";
 
-import Login from "./pages/Login";
+import { API_TOKEN, API_URL } from "./constants";
 
 const App = () => {
   const [page, setPage] = useState("init");
@@ -32,11 +32,9 @@ const App = () => {
   };
 
   const getToken = async () => {
-    await axios
-      .get("https://opentdb.com/api_token.php?command=request")
-      .then((res) => {
-        setToken(res.data.token);
-      });
+    await axios.get(API_TOKEN).then((res) => {
+      setToken(res.data.token);
+    });
   };
 
   const getUrl = async () => {
@@ -44,10 +42,7 @@ const App = () => {
       getToken();
     }
 
-    let url = `https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple&encode=url3986`;
-
-    let res = await axios.get(url);
-    console.log(res);
+    let res = await axios.get(API_URL);
 
     if (res.data.results) {
       let newQuestions = res.data.results.map((q) => {
@@ -91,15 +86,6 @@ const App = () => {
         <Route
           exact
           path="/"
-          element={
-            <div className="containerFluid">
-              <Login />
-            </div>
-          }
-        />
-        <Route
-          exact
-          path="/quiz"
           element={<div className="containerFluid">{content}</div>}
         />
       </Routes>

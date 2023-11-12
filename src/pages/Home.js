@@ -1,17 +1,9 @@
 import React from "react";
-import Spinner from "../component/Spinner";
-import { Button, Card } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import "../App.css";
+import { Button } from "antd";
 
 const InitialCard = (props) => {
-  let btn = props.spinner ? (
-    <Spinner />
-  ) : (
-    <Button variant="secondary" onClick={() => props.click("play")}>
-      Start now!
-    </Button>
-  );
-
   return (
     <Card className="init">
       <Card.Body>
@@ -21,7 +13,13 @@ const InitialCard = (props) => {
           15 seconds to answer each question. Get at least 6 correct answers out
           of 10 to pass the test. Relax, it's so easy!
         </p>
-        {btn}
+        <Button
+          size="large"
+          loading={props.spinner}
+          onClick={() => props.click("play")}
+        >
+          Start now!
+        </Button>
       </Card.Body>
     </Card>
   );

@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Card } from "react-bootstrap";
+import { Card } from "react-bootstrap";
+import { Button } from "antd";
 
 export default function ResultCard(props) {
   return (
@@ -9,7 +10,7 @@ export default function ResultCard(props) {
         <p>
           {props.pass ? "You passed the level!" : "You did not pass the quiz."}
         </p>
-        <Button variant="secondary" onClick={props.play}>
+        <Button onClick={props.play} size="large">
           {props.pass ? "Play Again!" : "Try Again!"}
         </Button>
       </Card.Body>
