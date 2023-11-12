@@ -1,47 +1,47 @@
-body
-{
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.ant-progress {
+  margin-inline-end: 0 !important;
+  width: 100%;
 }
-.card
-{
+.ant-progress .ant-progress-text {
+  display: none;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card {
   width: 40vw;
   text-align: center;
 }
-.init, .play
-{
+.init,
+.play {
   height: 100vh;
 }
-.opt .btn{
+.opt .btn {
   width: 100%;
-  height: 60px;
-  line-height: 60px;
-  margin: 5px;
-  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
-.question h1
-{
+.opt .btn button {
+  width: 100% !important;
+}
+.question h1 {
   font-size: 20px;
 }
 
 @media screen and (max-width: 768px) {
-  .card
-  {
+  .card {
     width: 80vw;
   }
-  .init, .play
-  {
+  .init,
+  .play {
     width: 80vw;
   }
 }
-
-
-
 
 .lds-spinner {
   color: black;

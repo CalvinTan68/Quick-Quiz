@@ -3,7 +3,7 @@ import axios from "axios";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 import Init from "./pages/Home";
 import Play from "./pages/Quiz";
@@ -18,7 +18,6 @@ const App = () => {
   const [level, setLevel] = useState(1);
   const [passed, setPassed] = useState(false);
   const [token, setToken] = useState("");
-  const navigate = useNavigate();
 
   const shuffle = (a) => {
     return a.sort(() => Math.random() - 0.5);
@@ -88,6 +87,7 @@ const App = () => {
           path="/"
           element={<div className="containerFluid">{content}</div>}
         />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Options from "../component/Options";
 import { Card } from "react-bootstrap";
+import { Button, Progress } from "antd";
 
 const Quiz = ({ questions, finished }) => {
   const [timer, setTimer] = useState(15);
@@ -108,8 +109,9 @@ const Quiz = ({ questions, finished }) => {
     <>
       <Card className="play">
         <Card.Header>
-          <p>Time left: {timer === false ? 0 : timer}</p>
-          <p>Correct: {score}</p>
+          <p>
+            Question {qNumber} / {questions.length}
+          </p>
         </Card.Header>
 
         <div
@@ -122,7 +124,6 @@ const Quiz = ({ questions, finished }) => {
             }
           }}
         >
-          <h1>Question {qNumber} / 10</h1>
           <h1>{decodeURIComponent(question)}</h1>
         </div>
 
@@ -138,6 +139,11 @@ const Quiz = ({ questions, finished }) => {
         >
           {opt}
         </div>
+        <Progress
+          percent={timer * 6.666666}
+          showInfo={false} // Change "false" to false
+          strokeColor={timer * 6.666666 < 34 ? "red" : ""}
+        />
       </Card>
     </>
   );
